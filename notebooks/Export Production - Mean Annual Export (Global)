@@ -1,0 +1,26 @@
+data_directory = data_directory = '/badc/cmip6/data/CMIP6/CMIP/MOHC/UKESM1-0-LL/'
+!ls {data_directory}
+
+from itertools import chain
+from glob import glob
+
+import matplotlib.pyplot as plt
+import xarray as xr
+
+# Set some plotting defaults
+plt.rcParams['figure.figsize'] = (10, 6)
+plt.rcParams['figure.dpi'] = 100
+
+dataset = xr.open_mfdataset(data_directory + 'piControl/r1i1p1f2/Omon/epc100/gn/latest/epc100_Omon_UKESM1-0-LL_piControl_r1i1p1f2_gn_196001-204912.nc')
+
+epc = dataset['epc100']
+epc.compute()
+
+epc_global_av = epc.mean(['j','i'])
+epc_global_av.depth
+
+mean_annual_epc = epc_global_av.resample(time="1Y")
+mean_annual_epc_final = mean_annual_epc.mean()
+mean_annual_epc_final
+
+mean_annual_epc_final.plot()
